@@ -1,0 +1,19 @@
+{
+  "name": "client-comm",
+  "version": "0.0.1",
+  "description": "A library to communicate between client side tabs on a master-slave basis.",
+  "main": "Gruntfile.js",  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VMInnovations/client-comm.git"
+  },
+  "author": "jaekschmitt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VMInnovations/client-comm/issues"
+  },
+  "homepage": "https://github.com/VMInnovations/client-comm",
+  "devDependencies": {
+    "http-server": "^0.7.4"
+  }
+}

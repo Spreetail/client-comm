@@ -1,0 +1,20 @@
+{
+  "name": "client-comm",
+  "version": "0.0.1",
+  "homepage": "https://github.com/VMInnovations/client-comm",
+  "description": "A library to communicate between client side tabs on a master-slave basis.",
+  "main": "Gruntfile.js",
+  "authors": [
+    "jaekschmitt"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "./bower_modules",
+    "test",
+    "tests"
+  ]
+}
