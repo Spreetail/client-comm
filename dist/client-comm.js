@@ -1,61 +1,48 @@
 (function() {
 
 	var utils = {
-		generateHubName: function() {
-			var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		generateGuid: function() {
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 				var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
 				return v.toString(16);
 			});
-
-			console.debug('Hub: Generated Hub Name ' + guid);
-			return guid;
 		}
 	};
 
 	var defaults = {
-		hub: {
-
-		}
+		hub: {},
+		listener: {}
 	};	
 
+	var Listener = function(settings) {
+		settings = $.extend({}, defaults.listener, settings);			
+	};
+
 	var Hub = function(settings) {
-		settings = $.extend({}, defaults.hub, settings);
-		var self = this;		
+		settings = $.extend({}, defaults.hub, settings);		
+		
+		this.name = settings.name;		
+	};
+	
+	function checkBuildHub(hubName) {
+		var hub = localStorage.getItem(hubName);
+		
+		if(!hub) hub = buildHub(hubName);
+		return subscribeToHub(hub)
+	};
 
-		this.name = settings.name || utils.generateHubName();
-		this.subscription = settings.subscription || null;
+	function buildHub(hubName) {
+		return new Hub({ name: hubName });		
+	};
 
-		if(this.subscription) setupEvents();		
-		this.subscribe = function(handler) {
-			console.debug('Hub: Subscription Setup');
-			this.subscription = handler;
-			setupEvents();
-		};
-
-		this.publish = function(msg) {
-			console.debug('Hub: Message Published - ' + msg);
-			publishToListeners(msg);
-		};
-
-		function setupEvents() {
-			console.debug('Hub: Setup Events');
-			window.addEventListener('storage', notifySubscriptions, false);
-		};		
-
-		function publishToListeners(msg) {
-			localStorage.setItem(self.name, msg);
-		};	
-
-		function notifySubscriptions(event) {
-			if(!self.subscription) return console.debug('Hub: There are no subscriptions.');
-			self.subscription(event.newValue);
-		};
-
+	function subscribeToHub(hub) {
+		var listener = new Listener();		
+		return listener;
 	};
 
 	// Release to global scope.
 	window.ClientComm = {
-		Hub: Hub
+		Hub: checkBuildHub
 	};
 
 })();
