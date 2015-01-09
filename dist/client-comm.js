@@ -23,7 +23,7 @@
 
 		this.name = data.name || '';
 		this.key = data.name + '-msg';
-		this.subscriberIds = data.subscriberIds || [];				
+		this.subscriberIds = data.subscriberIds || [];		
 
 		this.save = function() {			
 			localStorage.setItem(this.name, JSON.stringify(this));
@@ -31,6 +31,7 @@
 
 		this.destroy = function() {
 			localStorage.removeItem('basic-example');
+			localStorage.removeItem('basic-example-msg');
 		};		
 
 		this.removeSubscriber = function(id) {
@@ -55,7 +56,11 @@
 		};	
 
 		function registerEvents() {
-
+			if(window.addEventListener) {
+				window.addEventListener('storage', handleStorageEvent, false);				
+			} else {
+				window.attachEvent('onstorage', handleStorageEvent);
+			}
 		};			
 	};
 	
@@ -87,9 +92,9 @@
 			}
 
 			function handleStorageEvent(event) {
-				if(event.key !== context.messageKey) return;
+				if(event.key !== context.messageKey || !event.newValue) return;
 				
-				if(typeof this.onMessage !== 'function') throw "A subscribers onMessage property must be a function.";
+				if(typeof context.onMessage !== 'function') throw "A subscribers onMessage property must be a function.";
 				context.onMessage(event.newValue);
 			};
 		};		
@@ -97,7 +102,6 @@
 		function registerCleanupTasks() {
 			window.onbeforeunload = function(e) {
 				context.destroy();				
-
 				return null;
 			}
 		};
