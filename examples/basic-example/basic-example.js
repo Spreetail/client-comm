@@ -7,6 +7,6 @@
 
 	// Setup our communication hub.
 	var hub = ClientComm.Hub('basic-example');
-	var client = hub.CreateSubscriber();
+	var client = hub.createSubscriber();
 	
 })();

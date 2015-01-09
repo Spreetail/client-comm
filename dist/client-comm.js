@@ -22,23 +22,40 @@
 		var context = this;
 
 		this.name = data.name || '';
-		this.subscriberIds = data.subscriberIds || [];		
+		this.key = data.name + '-msg';
+		this.subscriberIds = data.subscriberIds || [];				
 
 		this.save = function() {			
 			localStorage.setItem(this.name, JSON.stringify(this));
-		};		
+		};				
 
 		this.destroy = function() {
-			localStorage.removeItem(this.name);
+			localStorage.removeItem('basic-example');
+		};		
+
+		this.removeSubscriber = function(id) {
+			var idx = this.subscriberIds.indexOf(id);
+
+			if(idx > -1) {
+				this.subscriberIds.splice(idx, 1);
+				this.save();
+			}
+
+			if(this.subscriberIds.length === 0)
+				this.destroy();
 		};
 
-		this.CreateSubscriber = function() {
+		this.createSubscriber = function() {
 			var sub = new Subscriber(this);
 			
 			this.subscriberIds.push(sub.id);		
 			this.save();
 
 			return sub;	
+		};	
+
+		function registerEvents() {
+
 		};			
 	};
 	
@@ -50,8 +67,13 @@
 		this.messageKey = hub.name + '-msg';
 		this.onMessage = null;			
 
-		this.send = function(msg) {
-			localStorage.setItem(this.hubName, msg);
+		this.broadcast = function(msg) {			
+			localStorage.setItem(this.messageKey, msg);
+		};
+
+		this.destroy = function() {			
+			var hub = getHub(this.hubName);			
+			hub.removeSubscriber(this.id);				
 		};
 
 		registerEvents();
@@ -73,14 +95,11 @@
 		};		
 
 		function registerCleanupTasks() {
-			window.onbeforeunload = function(e) {										
-				var hub = getHub(context.hubName);
+			window.onbeforeunload = function(e) {
+				context.destroy();				
 
-				var idIdx = hub.subscriberIds.indexOf(context.id);
-				if(idIdx > -1) array.splice(idIdx, 1);
-
-				if(hub.subscriberIds.length === 0) hub.destroy();
-			};
+				return null;
+			}
 		};
 	};
 
@@ -97,10 +116,7 @@
 	};
 
 	function buildHub(hubName) {
-		var hub = new Hub({ name: hubName });
-		hub.save();
-
-		return hub;
+		return new Hub({ name: hubName });				
 	};
 
 	// Release to global scope
