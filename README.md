@@ -17,3 +17,12 @@ npm install
 ```
 bower install
 ```
+
+Running
+-------
+
+To run everything in a simulated environment instead of directly off the file system navigate to the root folder of the project and run:
+```
+http-server .
+```
+From there your demos will be served at localhost:8080/examples/[example_name]
