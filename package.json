@@ -14,6 +14,6 @@
   },
   "homepage": "https://github.com/VMInnovations/client-comm",
   "devDependencies": {
-    "http-server": "^0.7.4"
+    "http-server": "^0.13.0"
   }
 }
